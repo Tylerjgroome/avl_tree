@@ -5,11 +5,12 @@ using namespace std;
 int main(void) {
     avl_tree *avl = new avl_tree(0);
     
-    for (int i = 1; i < 2; i++) {
+    for (int i = 0; i < 10; i++) {
         avl->insert(i);
     }
 
-    std::cout << avl->getNumNodes() << std::endl;
+    cout << "AVL tree has " << avl->getNumNodes() << " nodes" << endl;
+    avl->printInOrder();
 
     avl->~avl_tree();
 

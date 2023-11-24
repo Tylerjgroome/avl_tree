@@ -54,6 +54,28 @@ int avl_tree::getNumNodes(void) {
     return num_nodes;
 }
 
+// print elements in tree in order
+void avl_tree::printInOrder(void) {
+    std::cout << "In order: " << std::endl;
+    printInOrderHelper(root);
+    std::cout << "\n";
+}
+
+// print elements in tree in post order
+void avl_tree::printPostOrder(void) {
+    std::cout << "Post order: " << std::endl;
+    printPostOrderHelper(root);
+    std::cout << "\n";
+}
+
+// print elements in tree in order
+void avl_tree::printPreOrder(void) {
+    std::cout << "Pre order: " << std::endl;
+    printPreOrderHelper(root);
+    std::cout << "\n";
+}
+
+
 // AVL tree destructor, calls recursive private deleteNodes method
 avl_tree::~avl_tree() {
     deleteNodes(root);

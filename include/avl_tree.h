@@ -19,6 +19,9 @@ class avl_tree {
         int getMaxHeight(void);
         void setMaxHeight(int height);
         int getNumNodes(void);
+        void printInOrder(void);
+        void printPreOrder(void);
+        void printPostOrder(void);
         ~avl_tree();
     private:
         int num_nodes;
@@ -141,4 +144,40 @@ class avl_tree {
 
             return n;
         };
+
+        void printInOrderHelper(node *n) {
+            if (n == NULL) {
+                return;
+            }
+
+            printInOrderHelper(n->left);
+            
+            std::cout << n->value << " ";
+
+            printInOrderHelper(n->right);
+        }
+
+        void printPostOrderHelper(node *n) {
+            if (n == NULL) {
+                return;
+            }
+
+            printInOrderHelper(n->left);
+
+            printInOrderHelper(n->right);
+
+            std::cout << n->value << " ";
+        }
+
+        void printPreOrderHelper(node *n) {
+            if (n == NULL) {
+                return;
+            }
+            
+            std::cout << n->value << " ";
+
+            printInOrderHelper(n->left);
+
+            printInOrderHelper(n->right);
+        }
 };
