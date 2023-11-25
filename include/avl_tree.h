@@ -22,6 +22,8 @@ class avl_tree {
         void printInOrder(void);
         void printPreOrder(void);
         void printPostOrder(void);
+        bool check(int value);
+        node* findNode(int value);
         ~avl_tree();
     private:
         int num_nodes;
@@ -121,7 +123,7 @@ class avl_tree {
                 return n;
             }
 
-            n->height = max(getHeight(n->left),getHeight(n->right))+1;
+            n->height = max(getHeight(n->left),getHeight(n->right)) + 1;
 
             int balance_factor = getBalance(n);
 

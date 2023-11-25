@@ -11,14 +11,12 @@ int main(void) {
 
     cout << "AVL tree has " << avl->getNumNodes() << " nodes" << endl;
     avl->printInOrder();
-
-    cout << "AVL tree root value: " << endl;
-
+    cout << avl->findNode(3)->value << endl;
     avl->remove(4);
     cout << "AVL tree has " << avl->getNumNodes() << " nodes" << endl;
     avl->printInOrder();
 
-    cout << "Height of AVL tree is " << avl->getMaxHeight() << endl;
+    cout << "Height of AVL tree is " << avl->getRootNode()->left->left->left->height << endl;
 
     avl->~avl_tree();
 

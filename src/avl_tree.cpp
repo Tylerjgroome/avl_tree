@@ -84,6 +84,37 @@ void avl_tree::printPreOrder(void) {
     std::cout << "\n";
 }
 
+bool avl_tree::check(int value) {
+    node *n = root;
+
+    while (n != NULL) {
+        if (n->value > value) {
+            n = n->left;
+        } else if (n->value < value) {
+            n = n->right;
+        } else {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+node * avl_tree::findNode(int value) {
+    node *n = root;
+
+    while (n != NULL) {
+        if (n->value > value) {
+            n = n->left;
+        } else if (n->value < value) {
+            n = n->right;
+        } else {
+            return n;
+        }
+    }
+
+    return NULL;
+}
 
 // AVL tree destructor, calls recursive private deleteNodes method
 avl_tree::~avl_tree() {
