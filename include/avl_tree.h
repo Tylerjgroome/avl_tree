@@ -87,29 +87,17 @@ class avl_tree {
         }
 
         void updateMaxHeight() {
-            int height = 0;
-            return updateMaxHeightHelper(root,height);
-        }
-
-        void updateMaxHeightHelper(node *n, int height) {
-            if (n == NULL) {
-                return;
-            }
-            
-            updateMaxHeightHelper(n->left,height);
-            
-            if (n->height > height) {
-                height = n->height;
-                max_height = n->height;
-            }
-
-            updateMaxHeightHelper(n->right,height);
+            max_height = getRootNode()->height;
         }
 
         node *insertHelper(node* n, int value) {
     
             if (n == NULL) {
-                return createNode(value);
+                node *n = createNode(value);
+                if (root == NULL) {
+                    root = n;
+                }
+                return n;
             }
 
             if (n->value < value) {

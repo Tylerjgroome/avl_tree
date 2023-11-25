@@ -33,8 +33,10 @@ void avl_tree::insert(int value) {
 
 // remove value from the AVL tree and self-balance
 void avl_tree::remove(int value) {
-    node *remove = removeHelper(root,value);
-    if (remove != NULL) {
+    node *n = removeHelper(root,value);
+    
+    if (n != NULL) {
+        setRootNode(n);
         num_nodes--;
     } else {
         std::cout << "Value " << value << " not found in AVL tree" << std::endl;
