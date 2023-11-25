@@ -24,8 +24,22 @@ avl_tree::avl_tree(int value) {
 
 // insert value into the AVL tree and self-balance
 void avl_tree::insert(int value) {
-    node *insert = insertHelper(root,value);
-    if (insert != NULL) num_nodes++;
+    node *n = insertHelper(root,value);
+    setRootNode(n);
+    num_nodes++;
+    updateMaxHeight();
+    return;
+}
+
+// remove value from the AVL tree and self-balance
+void avl_tree::remove(int value) {
+    node *remove = removeHelper(root,value);
+    if (remove != NULL) {
+        num_nodes--;
+    } else {
+        std::cout << "Value " << value << " not found in AVL tree" << std::endl;
+    }
+    updateMaxHeight();
     return;
 }
 
@@ -42,11 +56,6 @@ void avl_tree::setRootNode(node *n) {
 // get the maximum height of the tree
 int avl_tree::getMaxHeight(void) {
     return max_height;
-}
-
-// set the maximum height of the tree
-void avl_tree::setMaxHeight(int height) {
-    max_height = height;
 }
 
 // get the number of nodes in the tree

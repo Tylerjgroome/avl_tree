@@ -14,10 +14,10 @@ class avl_tree {
         avl_tree(void);
         avl_tree(int value);
         void insert(int value);
+        void remove(int value);
         node *getRootNode(void);
         void setRootNode(node *n);
         int getMaxHeight(void);
-        void setMaxHeight(int height);
         int getNumNodes(void);
         void printInOrder(void);
         void printPreOrder(void);
@@ -58,34 +58,50 @@ class avl_tree {
             return (a > b) ? a : b;
         }
 
-        node *rightRotation(node * n) {
-            node *left = n->left;
-            node *right_left = left->right;
+        node *rightRotation(node * y) {
+            node *x = y->left;
+            node *T2 = x->right;
 
-            left->right = n;
-            n->left = right_left;
+            x->right = y;
+            y->left = T2;
 
-            n->height = 1 + max(getHeight(n->left),getHeight(n->right));
-            left->height = 1 + max(getHeight(left->left),getHeight(left->right));
+            y->height = 1 + max(getHeight(y->left),getHeight(y->right));
+            x->height = 1 + max(getHeight(x->left),getHeight(x->right));
 
-            root = left;
-
-            return left;
+            return x;
         }
 
-        node *leftRotation(node * n) {
-            node *right = n->right;
-            node *left_right = right->left;
+        node *leftRotation(node * x) {
+            node *y = x->right;
+            node *T2 = y->left;
+            
+            y->left = x;
+            x->right = T2;
 
-            right->left = n;
-            n->right = left_right;
+            x->height = 1 + max(getHeight(x->left),getHeight(x->right));
+            y->height = 1 + max(getHeight(y->left),getHeight(y->right));
+            
+            return y;
+        }
 
-            n->height = 1 + max(getHeight(n->left),getHeight(n->right));
-            right->height = 1 + max(getHeight(right->left),getHeight(right->right));
+        void updateMaxHeight() {
+            int height = 0;
+            return updateMaxHeightHelper(root,height);
+        }
 
-            root = right;
+        void updateMaxHeightHelper(node *n, int height) {
+            if (n == NULL) {
+                return;
+            }
+            
+            updateMaxHeightHelper(n->left,height);
+            
+            if (n->height > height) {
+                height = n->height;
+                max_height = n->height;
+            }
 
-            return right;
+            updateMaxHeightHelper(n->right,height);
         }
 
         node *insertHelper(node* n, int value) {
@@ -101,7 +117,45 @@ class avl_tree {
             } else {
                 // no duplicates
                 std::cout << "Duplicate value ignored" << std::endl;
-                return NULL;
+                num_nodes--;
+                return n;
+            }
+
+            n->height = max(getHeight(n->left),getHeight(n->right))+1;
+
+            int balance_factor = getBalance(n);
+
+            if (balance_factor > 1 && n->left->value > value) return rightRotation(n);
+            if (balance_factor < -1 && n->right->value < value) return leftRotation(n);
+
+            if (n->left != NULL && balance_factor > 1 && n->left->value < value) {
+                n->left = leftRotation(n->left);
+                return rightRotation(n);
+            }
+
+            if (n->right != NULL && balance_factor < -1 && n->right->value > value) {
+                n->right = rightRotation(n->right);
+                return leftRotation(n);
+            }
+
+            return n;
+        };
+
+        node *removeHelper(node* n, int value) {
+    
+            if (n == NULL) {
+                return createNode(value);
+            }
+
+            if (n->value < value) {
+                n->right = removeHelper(n->right,value);
+            } else if (n->value > value) {
+                n->left = removeHelper(n->left,value);
+            } else {
+                // value found
+                node *copy = n->right;
+                delete n;
+                return copy;
             }
 
             int height = max(getHeight(n->left),getHeight(n->right));
@@ -110,8 +164,8 @@ class avl_tree {
 
             int balance_factor = getBalance(n);
 
-            if (balance_factor > 1 && n->left->value > value) rightRotation(n);
-            if (balance_factor < -1 && n->right->value < value) leftRotation(n);
+            if (balance_factor > 1 && n->left->value > value) return rightRotation(n);
+            if (balance_factor < -1 && n->right->value < value) return leftRotation(n);
 
             if (balance_factor > 1 && n->left->value < value) {
                 n->left = leftRotation(n->left);
@@ -162,9 +216,9 @@ class avl_tree {
                 return;
             }
 
-            printInOrderHelper(n->left);
+            printPostOrderHelper(n->left);
 
-            printInOrderHelper(n->right);
+            printPostOrderHelper(n->right);
 
             std::cout << n->value << " ";
         }
@@ -176,8 +230,8 @@ class avl_tree {
             
             std::cout << n->value << " ";
 
-            printInOrderHelper(n->left);
+            printPreOrderHelper(n->left);
 
-            printInOrderHelper(n->right);
+            printPreOrderHelper(n->right);
         }
 };
