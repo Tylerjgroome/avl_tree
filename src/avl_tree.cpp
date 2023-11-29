@@ -50,11 +50,6 @@ node * avl_tree::getRootNode(void) {
     return root;
 }
 
-// set the root node of the tree
-void avl_tree::setRootNode(node *n) {
-    root = n;
-}
-
 // get the maximum height of the tree
 int avl_tree::getMaxHeight(void) {
     return max_height;
@@ -86,6 +81,7 @@ void avl_tree::printPreOrder(void) {
     std::cout << "\n";
 }
 
+// check whether a value exists in the tree
 bool avl_tree::check(int value) {
     node *n = root;
 
@@ -95,27 +91,34 @@ bool avl_tree::check(int value) {
         } else if (n->value < value) {
             n = n->right;
         } else {
+            // value found
             return true;
         }
     }
 
+    // value not found if this point is reached
     return false;
 }
 
+// function to find a node with particular value in the tree
 node * avl_tree::findNode(int value) {
-    node *n = root;
+    if (check(value)) {
+        node *n = root;
 
-    while (n != NULL) {
-        if (n->value > value) {
-            n = n->left;
-        } else if (n->value < value) {
-            n = n->right;
-        } else {
-            return n;
+        while (n != NULL) {
+            if (n->value > value) {
+                n = n->left;
+            } else if (n->value < value) {
+                n = n->right;
+            } else {
+                // node found
+                return n;
+            }
         }
+    } else {
+        // node not found
+        return NULL;
     }
-
-    return NULL;
 }
 
 // AVL tree destructor, calls recursive private deleteNodes method

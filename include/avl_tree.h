@@ -1,9 +1,9 @@
 #pragma once
 #include <iostream>
 
+// node struct
 struct node {
     int value;
-    int balance;
     int height;
     node *left;
     node *right;
@@ -11,35 +11,66 @@ struct node {
 
 class avl_tree {
     public:
+        // default empty constructor
         avl_tree(void);
+
+        // constructor that initialises root node of tree with value
         avl_tree(int value);
+
+        // function to insert value into tree
         void insert(int value);
+
+        // function to remove value from tree
         void remove(int value);
+
+        // function to get the root node from the tree
         node *getRootNode(void);
-        void setRootNode(node *n);
+        
+        // function to get the height of the tree
         int getMaxHeight(void);
+
+        // function to get the number of nodes from the tree
         int getNumNodes(void);
+
+        // function to traverse, and print, the tree in order
         void printInOrder(void);
+
+        // function to travserse, and print, the tree pre order
         void printPreOrder(void);
+
+        // function to traverse, and print, the tree post order
         void printPostOrder(void);
+
+        // function to check the existence of a value in the tree
         bool check(int value);
+
+        // function to find the node with a particular value in the tree
         node* findNode(int value);
+
+        // avl tree destructor (deletes all nodes in the tree)
         ~avl_tree();
     private:
-        int num_nodes;
-        int max_height;
-        node *root;
+        int num_nodes; // number of nodes in the tree
+        int max_height; // height of the tree
+        node *root; // root node
 
+        // set the root node of the tree
+        void avl_tree::setRootNode(node *n) {
+            root = n;
+        }
+
+        // create a new node with value
         node *createNode(int value) {
             node *new_node = new node;
             new_node->value = value;
             new_node->left = NULL;
             new_node->right = NULL;
-            new_node->height = 1;
+            new_node->height = 1; // added to bottom of tree
             
             return new_node;
         }
 
+        // function to get the height of a node, if it exists
         int getHeight(node *n) {
             if (n == NULL) {
                 return 0;
@@ -48,6 +79,7 @@ class avl_tree {
             return n->height;
         }
 
+        // function to get the balance factor of a node, if it exists
         int getBalance(node* n) {
             if (n == NULL) {
                 return 0;
@@ -56,10 +88,12 @@ class avl_tree {
             return getHeight(n->left) - getHeight(n->right);
         }
 
+        // convenience function to return the maximum of integers a and b
         int max(int a, int b) {
             return (a > b) ? a : b;
         }
 
+        // right rotation function
         node *rightRotation(node * y) {
             node *x = y->left;
             node *T2 = x->right;
@@ -73,6 +107,7 @@ class avl_tree {
             return x;
         }
 
+        // left rotation function
         node *leftRotation(node * x) {
             node *y = x->right;
             node *T2 = y->left;
@@ -86,15 +121,19 @@ class avl_tree {
             return y;
         }
 
+        // function to update the height of the tree
         void updateMaxHeight() {
             max_height = getRootNode()->height;
         }
 
+        // recursive insert function helper
         node *insertHelper(node* n, int value) {
     
             if (n == NULL) {
+                // insert must occur here
                 node *n = createNode(value);
                 if (root == NULL) {
+                    // empty tree
                     root = n;
                 }
                 return n;
@@ -105,7 +144,7 @@ class avl_tree {
             } else if (n->value > value) {
                 n->left = insertHelper(n->left,value);
             } else {
-                // no duplicates
+                // no duplicates allowed
                 std::cout << "Duplicate value ignored" << std::endl;
                 num_nodes--;
                 return n;
@@ -131,6 +170,7 @@ class avl_tree {
             return n;
         };
 
+        // function to get the node of minimum value in the tree
         node * minValueNode(node * n) {
             node *curr = n;
 
@@ -141,9 +181,11 @@ class avl_tree {
             return curr;
         }
 
+        // recursive remove helper function
         node *removeHelper(node* n, int value) {
     
             if (n == NULL) {
+                // value does not exist in the tree
                 return n;
             }
 
@@ -155,9 +197,11 @@ class avl_tree {
                 // value found
                 
                 if (n->left == NULL || n->right == NULL) {
+                    // if n->left exists choose it, else chose n->right
                     node *temp = n->left ? n->left : n->right;
 
                     if (temp == NULL) {
+                        // if n->right is also NULL
                         temp = n;
                         n = NULL;
                     } else {
@@ -201,6 +245,7 @@ class avl_tree {
             return n;
         }
 
+        // function to recursively delete all nodes in the AVL tree (on ~AVL_tree() call)
         node *deleteNodes(node *n) {
             // n is initially the root node
 
@@ -220,6 +265,7 @@ class avl_tree {
             return n;
         };
 
+        // helper function to print in order
         void printInOrderHelper(node *n) {
             if (n == NULL) {
                 return;
@@ -232,6 +278,7 @@ class avl_tree {
             printInOrderHelper(n->right);
         }
 
+        // helper function for print post order
         void printPostOrderHelper(node *n) {
             if (n == NULL) {
                 return;
@@ -244,6 +291,7 @@ class avl_tree {
             std::cout << n->value << " ";
         }
 
+        // helper function for print pre order
         void printPreOrderHelper(node *n) {
             if (n == NULL) {
                 return;
