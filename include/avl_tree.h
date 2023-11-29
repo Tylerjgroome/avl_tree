@@ -131,10 +131,20 @@ class avl_tree {
             return n;
         };
 
+        node * minValueNode(node * n) {
+            node *curr = n;
+
+            while (curr->left != NULL) {
+                curr = curr->left;
+            }
+
+            return curr;
+        }
+
         node *removeHelper(node* n, int value) {
     
             if (n == NULL) {
-                return createNode(value);
+                return n;
             }
 
             if (n->value < value) {
@@ -143,32 +153,53 @@ class avl_tree {
                 n->left = removeHelper(n->left,value);
             } else {
                 // value found
-                node *copy = n->right;
-                delete n;
-                return copy;
+                
+                if (n->left == NULL || n->right == NULL) {
+                    node *temp = n->left ? n->left : n->right;
+
+                    if (temp == NULL) {
+                        temp = n;
+                        n = NULL;
+                    } else {
+                        *n = *temp;
+                    }
+
+                    delete temp;
+                } else {
+                    node *temp = minValueNode(n->right);
+
+                    n->value = temp->value;
+
+                    n->right = removeHelper(n->right,temp->value);
+                }
             }
 
-            int height = max(getHeight(n->left),getHeight(n->right));
+            if (n == NULL) {
+                // last node removed case
+                return n;
+            }
 
-            n->height = height++;
+            n->height = max(getHeight(n->left),getHeight(n->right)) + 1;
 
             int balance_factor = getBalance(n);
 
-            if (balance_factor > 1 && n->left->value > value) return rightRotation(n);
-            if (balance_factor < -1 && n->right->value < value) return leftRotation(n);
-
-            if (balance_factor > 1 && n->left->value < value) {
+            if (balance_factor > 1 && getBalance(n->left) >= 0) return rightRotation(n);
+            if (balance_factor > 1 && getBalance(n->left) < value) {
                 n->left = leftRotation(n->left);
                 return rightRotation(n);
             }
 
-            if (balance_factor < -1 && n->right->value > value) {
+            if (balance_factor < -1 && getBalance(n->right) <= 0) {
+                return leftRotation(n);
+            }
+
+            if (balance_factor < -1 && getBalance(n->right) > 0) {
                 n->right = rightRotation(n->right);
                 return leftRotation(n);
             }
 
             return n;
-        };
+        }
 
         node *deleteNodes(node *n) {
             // n is initially the root node

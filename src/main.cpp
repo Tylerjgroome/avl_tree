@@ -14,6 +14,13 @@ int main(void) {
 
     cout << "Height of AVL tree is " << avl->getMaxHeight() << endl;
 
+    avl->remove(9);
+
+    cout << "AVL tree has " << avl->getNumNodes() << " nodes" << endl;
+    avl->printInOrder();
+
+    cout << "Height of AVL tree is " << avl->getMaxHeight() << endl;
+
     avl->~avl_tree();
 
     return 0;
