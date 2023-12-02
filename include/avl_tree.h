@@ -55,252 +55,47 @@ class avl_tree {
         node *root; // root node
 
         // set the root node of the tree
-        void avl_tree::setRootNode(node *n) {
-            root = n;
-        }
+        void setRootNode(node *n);
 
         // create a new node with value
-        node *createNode(int value) {
-            node *new_node = new node;
-            new_node->value = value;
-            new_node->left = NULL;
-            new_node->right = NULL;
-            new_node->height = 1; // added to bottom of tree
-            
-            return new_node;
-        }
+        node *createNode(int value);
 
         // function to get the height of a node, if it exists
-        int getHeight(node *n) {
-            if (n == NULL) {
-                return 0;
-            }
-
-            return n->height;
-        }
+        int getHeight(node *n);
 
         // function to get the balance factor of a node, if it exists
-        int getBalance(node* n) {
-            if (n == NULL) {
-                return 0;
-            }
-
-            return getHeight(n->left) - getHeight(n->right);
-        }
+        int getBalance(node* n);
 
         // convenience function to return the maximum of integers a and b
-        int max(int a, int b) {
-            return (a > b) ? a : b;
-        }
+        int max(int a, int b);
 
         // right rotation function
-        node *rightRotation(node * y) {
-            node *x = y->left;
-            node *T2 = x->right;
-
-            x->right = y;
-            y->left = T2;
-
-            y->height = 1 + max(getHeight(y->left),getHeight(y->right));
-            x->height = 1 + max(getHeight(x->left),getHeight(x->right));
-
-            return x;
-        }
+        node *rightRotation(node * y);
 
         // left rotation function
-        node *leftRotation(node * x) {
-            node *y = x->right;
-            node *T2 = y->left;
-            
-            y->left = x;
-            x->right = T2;
-
-            x->height = 1 + max(getHeight(x->left),getHeight(x->right));
-            y->height = 1 + max(getHeight(y->left),getHeight(y->right));
-            
-            return y;
-        }
+        node *leftRotation(node * x);
 
         // function to update the height of the tree
-        void updateMaxHeight() {
-            max_height = getRootNode()->height;
-        }
+        void updateMaxHeight();
 
         // recursive insert function helper
-        node *insertHelper(node* n, int value) {
-    
-            if (n == NULL) {
-                // insert must occur here
-                node *n = createNode(value);
-                if (root == NULL) {
-                    // empty tree
-                    root = n;
-                }
-                return n;
-            }
-
-            if (n->value < value) {
-                n->right = insertHelper(n->right,value);
-            } else if (n->value > value) {
-                n->left = insertHelper(n->left,value);
-            } else {
-                // no duplicates allowed
-                std::cout << "Duplicate value ignored" << std::endl;
-                num_nodes--;
-                return n;
-            }
-
-            n->height = max(getHeight(n->left),getHeight(n->right)) + 1;
-
-            int balance_factor = getBalance(n);
-
-            if (balance_factor > 1 && n->left->value > value) return rightRotation(n);
-            if (balance_factor < -1 && n->right->value < value) return leftRotation(n);
-
-            if (n->left != NULL && balance_factor > 1 && n->left->value < value) {
-                n->left = leftRotation(n->left);
-                return rightRotation(n);
-            }
-
-            if (n->right != NULL && balance_factor < -1 && n->right->value > value) {
-                n->right = rightRotation(n->right);
-                return leftRotation(n);
-            }
-
-            return n;
-        };
+        node *insertHelper(node* n, int value);
 
         // function to get the node of minimum value in the tree
-        node * minValueNode(node * n) {
-            node *curr = n;
-
-            while (curr->left != NULL) {
-                curr = curr->left;
-            }
-
-            return curr;
-        }
+        node * minValueNode(node * n);
 
         // recursive remove helper function
-        node *removeHelper(node* n, int value) {
-    
-            if (n == NULL) {
-                // value does not exist in the tree
-                return n;
-            }
-
-            if (n->value < value) {
-                n->right = removeHelper(n->right,value);
-            } else if (n->value > value) {
-                n->left = removeHelper(n->left,value);
-            } else {
-                // value found
-                
-                if (n->left == NULL || n->right == NULL) {
-                    // if n->left exists choose it, else chose n->right
-                    node *temp = n->left ? n->left : n->right;
-
-                    if (temp == NULL) {
-                        // if n->right is also NULL
-                        temp = n;
-                        n = NULL;
-                    } else {
-                        *n = *temp;
-                    }
-
-                    delete temp;
-                } else {
-                    node *temp = minValueNode(n->right);
-
-                    n->value = temp->value;
-
-                    n->right = removeHelper(n->right,temp->value);
-                }
-            }
-
-            if (n == NULL) {
-                // last node removed case
-                return n;
-            }
-
-            n->height = max(getHeight(n->left),getHeight(n->right)) + 1;
-
-            int balance_factor = getBalance(n);
-
-            if (balance_factor > 1 && getBalance(n->left) >= 0) return rightRotation(n);
-            if (balance_factor > 1 && getBalance(n->left) < value) {
-                n->left = leftRotation(n->left);
-                return rightRotation(n);
-            }
-
-            if (balance_factor < -1 && getBalance(n->right) <= 0) {
-                return leftRotation(n);
-            }
-
-            if (balance_factor < -1 && getBalance(n->right) > 0) {
-                n->right = rightRotation(n->right);
-                return leftRotation(n);
-            }
-
-            return n;
-        }
+        node *removeHelper(node* n, int value);
 
         // function to recursively delete all nodes in the AVL tree (on ~AVL_tree() call)
-        node *deleteNodes(node *n) {
-            // n is initially the root node
-
-            if (n->left == NULL && n->right == NULL) {
-                delete n;
-                return NULL;
-            }
-
-            if (n->left == NULL && n->right != NULL) {
-                n->right = deleteNodes(n->right);
-            } else if (n->left != NULL && n->right == NULL) {
-                n->left = deleteNodes(n->left);
-            } else {
-                n->left = deleteNodes(n->left);
-            }
-
-            return n;
-        };
+        node *deleteNodes(node *n);
 
         // helper function to print in order
-        void printInOrderHelper(node *n) {
-            if (n == NULL) {
-                return;
-            }
-
-            printInOrderHelper(n->left);
-            
-            std::cout << n->value << " ";
-
-            printInOrderHelper(n->right);
-        }
+        void printInOrderHelper(node *n);
 
         // helper function for print post order
-        void printPostOrderHelper(node *n) {
-            if (n == NULL) {
-                return;
-            }
-
-            printPostOrderHelper(n->left);
-
-            printPostOrderHelper(n->right);
-
-            std::cout << n->value << " ";
-        }
+        void printPostOrderHelper(node *n);
 
         // helper function for print pre order
-        void printPreOrderHelper(node *n) {
-            if (n == NULL) {
-                return;
-            }
-            
-            std::cout << n->value << " ";
-
-            printPreOrderHelper(n->left);
-
-            printPreOrderHelper(n->right);
-        }
+        void printPreOrderHelper(node *n);
 };
